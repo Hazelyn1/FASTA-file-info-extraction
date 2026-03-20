@@ -117,15 +117,25 @@ position_orfs1 = []
 position_orfs2 = []
 position_orfs3 = []"""
 
+seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
+#this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
+#The idea is to store the ORFs from each sequence IN the index for that sequence if the ORF was FOUND in that sequence
+#So like, seq_orfs[0][0] would hold the first ORF for sequence 1
+#And seq_orfs[[1][0] would hold the second ORF for sequence 1
+
+#this is going to hold a list of lists (since re.findall returns a list) of the orfs found in each sequence
+#So like, seq_orfs[0] is going to hold all the ORFs for sequence 1
+
 #First reading from, starting at the beginning (index = 0)
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     seq = seqs_strings[i] #"seq" is going to act as a temporary hold through each iteration (redundant, but helps readability)
-    #re.findall(r"ATG.*TAA", seq)
+    #Where "seq" holds each of the 25 sequences one at a time. So for ex., seq[0] is sequence 1
     if re.findall(r"ATG.*TAA", seq): #first possible ORF
         #print(re.findall(r"ATG.*TAA", seq))
         orf1.append(re.findall(r"ATG.*TAA", seq))
         orf_nums += 1
         orf1_seq_index.append(i)
+        #print(i)
     if re.findall(r"ATG.*TAG", seq): #second possible ORF
         #print("ORF2 found ")
         orf2.append(re.findall(r"ATG.*TAG", seq))
@@ -141,11 +151,27 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
     else:
         print("No ORFs found ")
 
+#print(orf1_seq_index)
+
+for i in range(len(seqs_strings)):
+    print(i)
+    for j in range(0, 3):
+        if i in orf1_seq_index: #means there's an ORF in that sequence
+            print(orf1[i])
+            #This is giving me and out of range error but I think I accidentally KINDA figured it out
+            #The print out at least tells me which ORF 1's go with each sequence so that's cool
+            #I just gotta figure out the error and why it's giving me one
+            seq_orfs[j][0] = orf1[i] #put the corresponding ORF in THAT SEQUENCE into the row j at column i
+            #seq_orfs.append(re.findall(r"ATG.*TAA", seq))
+            #print(seq_orfs)
+        elif i not in orf1_seq_index:
+            continue
+
 print("\nFor reading frame 1, with sequences starting at index 0:")
 print("%d ORFs found within all %d FASTA sequences" % (orf_nums, len(seqs_strings)))
 #print("\n", orf1, "\n", orf2, "\n", orf3)
 print("\nSequences ORF1 found in: ", orf1_seq_index, "\nSequences ORF2 found in: ", orf2_seq_index, "\nSequences ORF3 found in: ", orf3_seq_index)
-
+print(seq_orfs)
 #SO now I know which sequences have which ORFs
 #I need to find the POSITIONS of each
 
@@ -203,9 +229,14 @@ if longest_orf == max_orf2:
 if longest_orf == max_orf3:
     longest_orf_index = max_ORF_index3
 
-print("\nLongest ORF in file is %d base pairs long in sequence %d" % (longest_orf, longest_orf_index +1))
+print("\nLongest ORF in file with reading frame 1 is %d base pairs long in sequence %d" % (longest_orf, longest_orf_index +1))
 print("Sequence identifier of sequence %d:" % (longest_orf_index+1))
 print(identifiers[longest_orf_index])
+
+#FINSIH THIS!!!!!!!!!!!!
+#FILL IN WITH OTHER READING FRAMES
+print("...............................................................................................................")
+
 
 
 #NOW need to find longest ORF in EACH SEQUENCE
