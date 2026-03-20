@@ -153,6 +153,8 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
 
 #print(orf1_seq_index)
 
+#This is me attempting to put all ORFs found in each sequence into a list of lists (seq_orfs)
+#It's giving me an out of range erroor on line 166 that I need to figure out
 for i in range(len(seqs_strings)):
     print(i)
     for j in range(0, 3):
