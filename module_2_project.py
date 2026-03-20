@@ -117,15 +117,6 @@ position_orfs1 = []
 position_orfs2 = []
 position_orfs3 = []"""
 
-seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
-#this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
-#The idea is to store the ORFs from each sequence IN the index for that sequence if the ORF was FOUND in that sequence
-#So like, seq_orfs[0][0] would hold the first ORF for sequence 1
-#And seq_orfs[[1][0] would hold the second ORF for sequence 1
-
-#this is going to hold a list of lists (since re.findall returns a list) of the orfs found in each sequence
-#So like, seq_orfs[0] is going to hold all the ORFs for sequence 1
-
 #First reading from, starting at the beginning (index = 0)
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     seq = seqs_strings[i] #"seq" is going to act as a temporary hold through each iteration (redundant, but helps readability)
@@ -185,6 +176,12 @@ orf1_lengths = []
 orf2_lengths = []
 orf3_lengths = []
 
+
+seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
+#this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
+#The idea is to store the ORFs from each sequence IN the index for that sequence if the ORF was FOUND in that sequence
+#So like, seq_orfs[0][0] would hold the first ORF for sequence 1
+#And seq_orfs[[1][0] would hold the second ORF for sequence 1
 #This is horribly inefficient but I cannot come up with a better way at the moment
 #ORF 1
 for i in range(len(orf1)): #23 times
