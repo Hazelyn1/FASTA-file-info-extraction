@@ -117,6 +117,7 @@ position_orfs1 = []
 position_orfs2 = []
 position_orfs3 = []"""
 
+
 #First reading from, starting at the beginning (index = 0)
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     seq = seqs_strings[i] #"seq" is going to act as a temporary hold through each iteration (redundant, but helps readability)
@@ -144,19 +145,24 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
 
 #print(orf1_seq_index)
 
-#This is me attempting to put all ORFs found in each sequence into a list of lists (seq_orfs)
-#It's giving me an out of range erroor on line 166 that I need to figure out
-for i in range(len(seqs_strings)):
-    print(i)
+seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
+#this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
+#The idea is to store the ORFs from each sequence IN the index for that sequence if the ORF was FOUND in that sequence
+#So like, seq_orfs[0][0] would hold the first ORF for sequence 1
+#And seq_orfs[[1][0] would hold the second ORF for sequence 1
+#This is me attempting to match each ORF to its sequence in a 3 row x 25 column list of lists
+#It's giving me an error at the moment, but I'm working on it
+#*NOTE this is for READING FRAME 1!
+
+#OK IMPORTANT!!! This is JUST for ORF 1!!!!!!!
+for i in range(len(orf1)):
+    #print(i)
     for j in range(0, 3):
         if i in orf1_seq_index: #means there's an ORF in that sequence
-            print(orf1[i])
-            #This is giving me and out of range error but I think I accidentally KINDA figured it out
-            #The print out at least tells me which ORF 1's go with each sequence so that's cool
-            #I just gotta figure out the error and why it's giving me one
+            #print(orf1[i])
             seq_orfs[j][0] = orf1[i] #put the corresponding ORF in THAT SEQUENCE into the row j at column i
             #seq_orfs.append(re.findall(r"ATG.*TAA", seq))
-            #print(seq_orfs)
+            print(seq_orfs)
         elif i not in orf1_seq_index:
             continue
 
@@ -164,7 +170,7 @@ print("\nFor reading frame 1, with sequences starting at index 0:")
 print("%d ORFs found within all %d FASTA sequences" % (orf_nums, len(seqs_strings)))
 #print("\n", orf1, "\n", orf2, "\n", orf3)
 print("\nSequences ORF1 found in: ", orf1_seq_index, "\nSequences ORF2 found in: ", orf2_seq_index, "\nSequences ORF3 found in: ", orf3_seq_index)
-print(seq_orfs)
+
 #SO now I know which sequences have which ORFs
 #I need to find the POSITIONS of each
 
@@ -176,12 +182,6 @@ orf1_lengths = []
 orf2_lengths = []
 orf3_lengths = []
 
-
-seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
-#this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
-#The idea is to store the ORFs from each sequence IN the index for that sequence if the ORF was FOUND in that sequence
-#So like, seq_orfs[0][0] would hold the first ORF for sequence 1
-#And seq_orfs[[1][0] would hold the second ORF for sequence 1
 #This is horribly inefficient but I cannot come up with a better way at the moment
 #ORF 1
 for i in range(len(orf1)): #23 times
