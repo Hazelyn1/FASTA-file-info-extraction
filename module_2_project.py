@@ -154,6 +154,11 @@ seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
 #It's giving me an error at the moment, but I'm working on it
 #*NOTE this is for READING FRAME 1!
 
+#WAIT A MINUTE I know why this is a problem and giving me like, a list of lists of lists
+#The variable "orf1" is a list ALREADY. So when I add an index of it to "seq_orfs", it's adding a list to a list, 
+#And "seq_orfs" was created as a list of lists.
+#So then, it becomes a list of lists of lists
+#Shit
 #OK IMPORTANT!!! This is JUST for ORF 1!!!!!!!
 for i in range(len(orf1)):
     #print(i)
