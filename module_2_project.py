@@ -1,6 +1,7 @@
 #Hazelyn Cates
 #Started 3/13/26
 #This is part of my Genomic Data Science Specialization class, for Module 2 final project
+from re import match
 
 import Bio
 from Bio import SeqIO
@@ -106,8 +107,8 @@ rows, cols = (25, longest_length) #want to make sure it's big enough to hold the
 #orfs = [[0 for i in range(cols)] for j in range(rows)] #stores ORFs from each sequence
 
 orf1, orf2, orf3 = [], [], []
-orf_nums = 0
-#Storing SEQUENCE index
+orf_nums = 0 #all ORFs
+#Storing SEQUENCE index (which sequence the ORF occured in)
 orf1_seq_index = []
 orf2_seq_index = []
 orf3_seq_index = []
@@ -118,16 +119,16 @@ position_orfs2 = []
 position_orfs3 = []"""
 
 
-#First reading from, starting at the beginning (index = 0)
+#First reading frame, starting at the beginning (index = 0)
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     seq = seqs_strings[i] #"seq" is going to act as a temporary hold through each iteration (redundant, but helps readability)
     #Where "seq" holds each of the 25 sequences one at a time. So for ex., seq[0] is sequence 1
     if re.findall(r"ATG.*TAA", seq): #first possible ORF
         #print(re.findall(r"ATG.*TAA", seq))
-        orf1.append(re.findall(r"ATG.*TAA", seq))
-        orf_nums += 1
-        orf1_seq_index.append(i)
-        #print(i)
+        orf1.append(re.findall(r"ATG.*TAA", seq)) #add it to a list containing this kind of ORF
+        orf_nums += 1 #add up total number of ORFs in file (all sequences)
+        orf1_seq_index.append(i) #which sequence ORF1 was found in
+        #print(seq[i[)
     if re.findall(r"ATG.*TAG", seq): #second possible ORF
         #print("ORF2 found ")
         orf2.append(re.findall(r"ATG.*TAG", seq))
@@ -143,7 +144,31 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
     else:
         print("No ORFs found ")
 
+
+#Now want to get the start and end positions of each ORF in each sequence for reading frame 1
+#NOTE this was a test (which worked!!) but the start and end positions aren't stored in any variables
+#I'll get to that next
+for i in range(len(seqs_strings)):
+    seq = seqs_strings[i]
+    for m in re.finditer(r"ATG.*TAA", seq): #ORF1
+        start1 = m.start() #gets start position of ORF1 in given sequence (starting with sequence 1)
+        end1 = m.end() #gets end position of ORF1 in a given sequence (starting with sequence 1)
+        #print(start1, "\n", end1)
+    for m in re.finditer(r"ATG.*TAG", seq):
+        start2 = m.start()
+        end2 = m.end()
+        #print(start2, "\n", end2)
+    for m in re.finditer("ATG.*TGA", seq):
+        start3 = m.start()
+        end3 = m.end()
+        #print(start3, "\n", end3)
+
+
 #print(orf1_seq_index)
+
+#For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier??
+
+
 
 seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
 #this variable creates a list of lists with 3 rows (one for each ORF) and 25 columns (one for each sequence)
@@ -155,7 +180,7 @@ seq_orfs = [[0 for i in range(3)] for j in range(len(seqs_strings))]
 #*NOTE this is for READING FRAME 1!
 
 #WAIT A MINUTE I know why this is a problem and giving me like, a list of lists of lists
-#The variable "orf1" is a list ALREADY. So when I add an index of it to "seq_orfs", it's adding a list to a list, 
+#The variable "orf1" is a list ALREADY. So when I add an index of it to "seq_orfs", it's adding a list to a list,
 #And "seq_orfs" was created as a list of lists.
 #So then, it becomes a list of lists of lists
 #Shit
@@ -167,7 +192,7 @@ for i in range(len(orf1)):
             #print(orf1[i])
             seq_orfs[j][0] = orf1[i] #put the corresponding ORF in THAT SEQUENCE into the row j at column i
             #seq_orfs.append(re.findall(r"ATG.*TAA", seq))
-            print(seq_orfs)
+            #print(seq_orfs)
         elif i not in orf1_seq_index:
             continue
 
