@@ -153,14 +153,17 @@ for i in range(len(seqs_strings)):
     for m in re.finditer(r"ATG.*TAA", seq): #ORF1
         start1 = m.start() #gets start position of ORF1 in given sequence (starting with sequence 1)
         end1 = m.end() #gets end position of ORF1 in a given sequence (starting with sequence 1)
+        print("\nORF1 in sequence %d starts at position %d, ends at position %d" % (i, start1, end1))
         #print(start1, "\n", end1)
     for m in re.finditer(r"ATG.*TAG", seq):
         start2 = m.start()
         end2 = m.end()
+        print("ORF2 in sequence %d starts at position %d, ends at position %d" % (i, start2, end2))
         #print(start2, "\n", end2)
     for m in re.finditer("ATG.*TGA", seq):
         start3 = m.start()
         end3 = m.end()
+        print("ORF3 in sequence %d starts at position %d, ends at position %d" % (i, start3, end3))
         #print(start3, "\n", end3)
 
 
