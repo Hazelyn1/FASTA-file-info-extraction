@@ -6,6 +6,7 @@ from re import match
 import Bio
 from Bio import SeqIO
 import re #regex
+from random import randrange
 
 #for storing number of sequences in file:
 seq_nums = 0
@@ -92,7 +93,9 @@ print("\nThe identifier(s) of the shortest sequence(s) is/are:")
 print(shortest_id)
 
 print("\n%d sequences in file" % seq_nums)
+print("...............................................................................................................")
 
+print("\nReading frame 1:")
 #Convert list of sequences in "seqs" to strings so I can parse through them
 seqs_strings = list(map(str, seqs))
 #print(len(seqs_strings))
@@ -108,18 +111,12 @@ rows, cols = (25, longest_length) #want to make sure it's big enough to hold the
 
 orf1, orf2, orf3 = [], [], []
 orf_nums = 0 #all ORFs
-#Storing SEQUENCE index (which sequence the ORF occured in)
+#Storing SEQUENCE index (which sequence the ORF occurred in)
 orf1_seq_index = []
 orf2_seq_index = []
 orf3_seq_index = []
 
-"""#Storing POSITION index
-position_orfs1 = []
-position_orfs2 = []
-position_orfs3 = []"""
-
-
-#First reading frame, starting at the beginning (index = 0)
+#Finding ORFs in first reading frame, starting at the beginning (index = 0)
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     seq = seqs_strings[i] #"seq" is going to act as a temporary hold through each iteration (redundant, but helps readability)
     #Where "seq" holds each of the 25 sequences one at a time. So for ex., seq[0] is sequence 1
@@ -147,29 +144,97 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
 
 #Now want to get the start and end positions of each ORF in each sequence for reading frame 1
 #NOTE this was a test (which worked!!) but the start and end positions aren't stored in any variables
+start_pos1 = [] #stores ORF1 start positions
+end_pos1 = [] #stores ORF1 end positions
+#max_orf1 = 0 #stores ORF with max length
+#orf1_len = [] #stores lengths of ORF1's in each sequence
+
+start_pos2 = []
+end_pos2 = []
+#max_orf2 = 0
+#orf2_len = []
+
+start_pos3 = []
+end_pos3 = []
+#max_orf3 = 0
+#orf3_len = []
+
+
+#For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier?
+#What is the starting position of the longest ORF in the sequence that contains it?
+
+#Pick sequence identifier at random:
+random = randrange(25) #pick a number between 0 and 25 at random
+random_id = identifiers[random]
+random_seq = 0 #default to zero
+
+for i in range(len(identifiers)): #loop through all identifiers
+    #print(identifiers[i])
+    if random_id == identifiers[i]: #find the one that matches
+        random_seq = i
+#print(random_seq)
+#OK, so NOW, if you know what sequence you're looking at, you can go to that sequence DIRECTLY using "finditer"
+#SO I can use the same approach as below using the loop to get the positions of ALL orfs in ALL sequence,
+#But now instead of using a loop, I can access that sequence directly, use it as a string,
+#Use "finditer" on it for all three ORFs, get the positions of all three, calculate the lengths, and determine the
+#positions (start and end) of the longest one
+#Yeah. Good plan. Ok let's do it:
+
+orf1_random = [] #store ORF1 of randomly picked sequence
+orf2_random = []
+orf3_random = []
+
+for i in range(len(seqs_strings)): #find the correct sequence given "random_seq", which was picked by a given random identifier
+    if i == random_seq: #if the correct sequence is found
+        #Now have to go through and find the ORFs using "findall"
+        if re.findall(r"ATG.*TAA", seqs_strings[i]):  # first possible ORF
+            orf1_random.append(re.findall(r"ATG.*TAA", seqs_strings[i]))
+            #len_random1 = len(re.findall(r"ATG.*TAA", seqs_strings[i]))
+            #print(re.findall(r"ATG.*TAA", seqs_strings[i]))
+        if re.findall(r"ATG.*TAG", seqs_strings[i]):
+            orf2_random.append(re.findall(r"ATG.*TAG", seqs_strings[i]))
+            #len_random2 = len(re.findall(r"ATG.*TAG", seqs_strings[i]))
+            #print(re.findall(r"ATG.*TAG", seqs_strings[i]))
+        if re.findall(r"ATG.*TGA", seqs_strings[i]):
+            orf3_random.append(re.findall(r"ATG.*TGA", seqs_strings[i]))
+            #len_random3 = len(re.findall(r"ATG.*TGA", seqs_strings[i]))
+            #print(re.findall(r"ATG.*TGA", seqs_strings[i]))
+        #print(seqs_strings[i])
+
+#FIX THIS!!! I know WHY it's wrong, but can't work on it any more tonight
+#Basically, the "orf_random" variables are lists of lists (b/c of course they are), so accessing them like this
+#Gives them by position in the list, not their actual length.
+#UGH!! I'll fix it tomorrow..............unless it drives me crazy tonight which it probably will..........
+max_rand_len = max (len(orf1_random), len(orf2_random), len(orf3_random))
+print("Longest ORF in sequence %d is %d base pairs long" % (random_seq, max_rand_len))
+#print(orf1_random)
+#print(orf2_random)
+#print(orf3_random)
+
+
 #I'll get to that next
 for i in range(len(seqs_strings)):
     seq = seqs_strings[i]
     for m in re.finditer(r"ATG.*TAA", seq): #ORF1
         start1 = m.start() #gets start position of ORF1 in given sequence (starting with sequence 1)
         end1 = m.end() #gets end position of ORF1 in a given sequence (starting with sequence 1)
-        print("\nORF1 in sequence %d starts at position %d, ends at position %d" % (i, start1, end1))
+        #orf1_len.append(end1 - start1) #calculate length of each ORF1
+        #print("\nORF1 in sequence %d starts at position %d, ends at position %d" % (i+1, start1, end1))
         #print(start1, "\n", end1)
     for m in re.finditer(r"ATG.*TAG", seq):
         start2 = m.start()
         end2 = m.end()
-        print("ORF2 in sequence %d starts at position %d, ends at position %d" % (i, start2, end2))
+        #orf2_len.append(end2 - start2)
+        #print("ORF2 in sequence %d starts at position %d, ends at position %d" % (i+1, start2, end2))
         #print(start2, "\n", end2)
     for m in re.finditer("ATG.*TGA", seq):
         start3 = m.start()
         end3 = m.end()
-        print("ORF3 in sequence %d starts at position %d, ends at position %d" % (i, start3, end3))
+        #orf3_len.append(end3 - start3)
+        #print("ORF3 in sequence %d starts at position %d, ends at position %d" % (i+1, start3, end3))
         #print(start3, "\n", end3)
 
 
-#print(orf1_seq_index)
-
-#For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier??
 
 
 
@@ -268,7 +333,7 @@ print(identifiers[longest_orf_index])
 #FINSIH THIS!!!!!!!!!!!!
 #FILL IN WITH OTHER READING FRAMES
 print("...............................................................................................................")
-
+print("\nReading frame 2 (+1)")
 
 
 #NOW need to find longest ORF in EACH SEQUENCE
@@ -289,3 +354,15 @@ print(".........................................................................
 #OR TO FIND THE ORFS AND GO UNTIL WE REACH THE END OF THE SEQUENCE (position > -1)
 #Use the "find" function WITHIN the WHILE loop to get ALL the positions!!!
 #See 4.2 lecture
+
+
+#4.) Find all repeats of length n
+#Use regex (most likely)
+#SO any sequence of length n, NOT a SPECIFIC repeat
+#I know these FASTA files are correct (i.e. no other bases besides the usual 4)
+#So it would be something like "/w{n}" for all alphanumeric values n times
+#So like, if you want to find repeats where n = 3
+#Say you have the sequence: ATTTAAGAGAGAGTTTTATTTATTTATTTTG
+#TTT is one, GAG is another, ATT is another, etc.
+#HAVE to make sure it allows for OVERLAPPING repeats!!!!
+
