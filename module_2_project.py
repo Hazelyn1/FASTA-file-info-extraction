@@ -21,10 +21,10 @@ sample = SeqIO.parse(fasta_file, "fasta")
 seqs = [] #empty list to store each sequence
 identifiers = [] #stores identifiers of each sequence
 lengths = [] #stores lengths of each sequence
-#max_seq_lens = [] #list to hold max sequence length, duplicates possible
-max_index = [] #list to hold index/indices of longest sequence(s)
-#min_seq_lens = [] #list to hold min sequence length, duplicates possible
-min_index = [] #list to hold index/indices of shortest sequence(s)
+longest_lengths = [] #stores lengths of sequences that are the longest (if there are multiple)
+shortest_lengths = [] #stores lengths of sequences that are the shortest (if there are multiple)
+longest_indices = [] #stores indices of longest sequences (if there are multiple)
+shortest_indices = [] #stores indices of shortest sequences (if there are multiple)
 
 #Parse through FASTA file:
 for record in sample: #where "record" is each entry in the file
@@ -40,28 +40,28 @@ for record in sample: #where "record" is each entry in the file
 print("The length of each sequence are as follows:")
 print(lengths)
 
+longest_length = max(lengths) #calculates longest sequence in all sequences in file
+shortest_length = min(lengths) #calculates shortest sequence in all sequences in file
+#Have to see if there is more than 1 sequence w/ the longest length (i.e. they're the same)
 #Find the longest sequence
-longest_length = max(lengths)
+for i in range(len(lengths)):
+    if lengths[i] == longest_length: #this will check the length of all sequences, including "longest_length" itself
+        longest_lengths.append(lengths[i]) #all longest lengths will be added
+        longest_indices.append(lengths.index(lengths[i])) #along with there indices
+    elif lengths[i] == shortest_length: #checks shortest sequences, including "shortest_length" itself
+        shortest_lengths.append(lengths[i])
+        shortest_indices.append(lengths.index(lengths[i]))
+#print(longest_lengths)
 
-longest_index = lengths.index(longest_length)
-#max_index.append(longest_index)
-#print(max_index)
 
-#Find the shortest sequence
-shortest_length = min(lengths)
-
-shortest_index = lengths.index(shortest_length)
-#min_index.append(shortest_index)
-#print(min_index)
-
-#check for max or min seq length DUPLICATES
-for i in range(seq_nums): #iterate for as many seqs are in the file
-    if lengths[i] == longest_length: #if the value matches, add its index
-        max_index.append(i) #add the index in which the duplicate was found
-    elif lengths[i] == shortest_length: #and same for min
-        min_index.append(i)
-    else:
-        continue
+print("\nLongest sequence length(s):")
+print(longest_lengths)
+print("Longest sequence index/indices:")
+print(longest_indices)
+print("\nShortest sequence length(s):")
+print(shortest_lengths)
+print("Shortest sequence index/indices:")
+print(shortest_indices)
 
 print("\nThe longest sequence is %d base pairs long" % longest_length)
 print("The shortest sequence is %d base pairs long" % shortest_length)
@@ -80,10 +80,11 @@ shortest_id = []
 #Since this program has to work with any FASTA file
 
 for i in range(len(identifiers)): #go through all 25 identifiers
-    for j in range(len(max_index)): #go through however many max lengths there are
-        if i == max_index[j]: #where index 0 = whatever value, index 1 = other value, etc.
+    for j in range(len(longest_indices)): #go through however many longest lengths there are
+        if i == longest_indices[j]: #where index 0 = whatever value, index 1 = other value, etc.
             longest_id.append(identifiers[i]) #if they match, add the corresponding identifier to the list
-        elif i == min_index[j]: # same thing with the min index/indices
+    for h in range(len(shortest_indices)): #go through however many shortest lengths there are
+        if i == shortest_indices[h]: # same thing with the min index/indices
             shortest_id.append(identifiers[i]) #same with the min
 
 print("\nThe identifier(s) of the longest sequence(s) is/are:")
@@ -99,7 +100,209 @@ seqs_strings = list(map(str, seqs))
 #print(len(seqs_strings))
 #type(seqs_strings)
 
+
 print("\n...............................................................................................................")
+#This is REALLY going to be finding the ORFs for reading frame 1 :(
+print("Reading frame 1:")
+stop_codons = ["TAA", "TGA", "TAG"] #three possible stop codons to terminate ORF
+orfs1 = [] #stores ORFs
+lengths = [] #stores lengths of ORFs
+j = 0 #start at first index (reading frame 1)
+
+for i in range(len(seqs_strings)): #go through all 25 sequences
+    seq = seqs_strings[i] #holder for the current sequence, helps readability
+    #print(i)
+    while j <= len(seq) - 3: #go through sequence making sure at least one codon is left in the current sequence
+        #print(i)
+        codon = seq[j:j+3] #iterate through bases in sets of three, which is a codon
+        if codon == "ATG": #check to see if current codon is a start codon
+            h = j + 3
+            while h <= len(seq) - 3: #meaning go through current sequence
+                stop = seq[h: h+3] #keeps track of each codon
+                if stop in stop_codons: #if "stop" hits one of the three stop codons:
+                    start1 = j + 1
+                    end1 = h + 3
+                    length1 = end1 - start1
+                    orfs1.append((start1, end1, length1, i))
+                    #print(i)
+                    #print(orfs)
+                    break #break out inner loop, find more in current sequence
+                h += 3
+            j = h if h > j else j + 3
+        else:
+            j += 3
+
+length_orfs1 = []
+orf_indices1 = []
+
+#print(orfs)
+
+for i in range(len(orfs1)):
+    length_orfs1.append(orfs1[i][2])
+    orf_indices1.append(orfs1[i][3])
+
+print("\nReading frame 1 ORF lengths:")
+print(length_orfs1)
+print("\nSequences of reading frame 1 ORFs:")
+print(orf_indices1)
+
+
+#Now need to get max ORF in the file and it's identifier
+max_orf1 = max(length_orfs1)
+for i in range(len(orf_indices1)):
+    if max_orf1 == length_orfs1[i]:
+        print("\nSequence %d has the longest ORF at %d base pairs long" % (orf_indices1[i]+1, max_orf1))
+        print("Sequence %d identifier:" % (orf_indices1[i]+1))
+        print(identifiers[orf_indices1[i]])
+
+#For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier?
+#What is the starting position of the longest ORF in the sequence that contains it?
+
+#Let user pick the identifier
+print("Pick a number between 0 and %d" % (seq_nums-1))
+picked_identifier = int(input())
+#print(picked_identifier)
+while picked_identifier < 0 or picked_identifier > (seq_nums-1):
+    print("Pick a number between 0 and %d" % (seq_nums-1))
+    picked_identifier = int(input())
+
+if picked_identifier in orf_indices1:
+    print("Sequence identifier of sequence %d" % (picked_identifier+1))
+    print(identifiers[picked_identifier])
+else:
+    print("Pick a number from the following list:")
+    print(orf_indices1)
+    picked_identifier = int(input())
+    while (picked_identifier not in orf_indices1):
+        print("Pick a number from the following list:")
+        print(orf_indices1)
+        picked_identifier = int(input())
+    print("Sequence identifier of sequence %d" % (picked_identifier + 1))
+    print(identifiers[picked_identifier])
+
+
+#With the identifier chosen and valid, have to find longest ORF in that sequence
+#So if sequence 1 (or 0 in this case) was chosen, have to find the ORFs that have their fourth item in the list match
+#The chosen identifier
+#So like:
+picked_orf_len = []
+for i in range(len(orfs1)):
+    if orfs1[i][3] == picked_identifier: #where orfs1[i][3] is the sequence where that ORF was found (1-25)
+        picked_orf_len.append(orfs1[i][2]) #add lengths of correct sequence ORFs to a list
+
+print("Sequence %d longest ORF is %d base pairs long" % ((picked_identifier+1), max(picked_orf_len)))
+
+#Now have to find the start and end positions of THAT LONGEST ORF
+#Could approach it the same way using the "max" function and matching it up with the proper entries in "orf1"
+#In this case, have to find the entry of the correct sequence with the longest length entry (third position, index 2)
+#and then extract the start and end positions of that SAME entry (indices 0 and 1, respectively)
+#But that's a problem for tomorrow b/c I'm tired rn
+
+
+
+print("\n\n\n................................................................................................................................")
+print("Reading frame 2:")
+#start j = 1
+j = 1
+orfs2 = []
+
+for i in range(len(seqs_strings)): #go through all 25 sequences
+    seq = seqs_strings[i] #holder for the current sequence, helps readability
+    while j <= len(seq) - 3: #go through sequence making sure at least one codon is left in the current sequence
+        codon = seq[j:j+3] #iterate through bases in sets of three, which is a codon
+        if codon == "ATG": #check to see if current codon is a start codon
+            h = j + 3
+            while h <= len(seq) - 3: #meaning go through current sequence
+                stop = seq[h: h+3] #keeps track of each codon
+                if stop in stop_codons: #if "stop" hits one of the three stop codons:
+                    start2 = j + 1
+                    end2 = h + 3
+                    length2 = end2 - start2
+                    orfs2.append((start2, end2, length2, i))
+                    #print(i)
+                    #print(orfs)
+                    break #break out inner loop, find more in current sequence
+                h += 3
+            j = h if h > j else j + 3
+        else:
+            j += 3
+
+length_orfs2 = []
+orf_indices2 = []
+#print(len(orfs2))
+
+for i in range(len(orfs2)):
+    length_orfs2.append(orfs2[i][2])
+    orf_indices2.append(orfs2[i][3])
+
+#FINISH THIS!!!!!!!
+print("Reading frame 2 ORF lengths:")
+print(length_orfs2)
+print("Sequence of reading frame 2 ORFs:")
+print(orf_indices2)
+
+
+
+print("\n\n\n................................................................................................................................")
+
+#FINISH THIS!!!!!
+print("Reading frame 3:")
+j = 2
+orfs3 = []
+for i in range(len(seqs_strings)): #go through all 25 sequences
+    seq = seqs_strings[i] #holder for the current sequence, helps readability
+    while j <= len(seq) - 3: #go through sequence making sure at least one codon is left in the current sequence
+        codon = seq[j:j+3] #iterate through bases in sets of three, which is a codon
+        if codon == "ATG": #check to see if current codon is a start codon
+            h = j + 3
+            while h <= len(seq) - 3: #meaning go through current sequence
+                stop = seq[h: h+3] #keeps track of each codon
+                if stop in stop_codons: #if "stop" hits one of the three stop codons:
+                    start3 = j + 1
+                    end3 = h + 3
+                    length3 = end3 - start3
+                    orfs3.append((start3, end3, length3, i))
+                    #print(i)
+                    #print(orfs)
+                    break #break out inner loop, find more in current sequence
+                h += 3
+            j = h if h > j else j + 3
+        else:
+            j += 3
+
+length_orfs3 = []
+orf_indices3 = []
+#print(orfs)
+
+for i in range(len(orfs3)):
+    length_orfs3.append(orfs3[i][2])
+    orf_indices3.append(orfs3[i][3])
+
+print("Reading frame 3 ORF lengths:")
+print(length_orfs3)
+print("Sequence of reading frame 3 ORFs:")
+print(orf_indices3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+print("\n\n\n\n\n\n\n\n\n...............................................................................................................")
 
 print("\nReading frame 1:")
 
@@ -213,7 +416,8 @@ rand_start = []
 rand_end = []
 
 #Now find the start and end positions of the ORFs
-#This i value will NOT change for the next two reading frames
+#FIX THIS!! IT ISN'T CORRECT!! IT'S NOT GOING BY TRIPLETS, IT'S JUST PATTERN MATCHING!!!!!
+#DAMN IT!!! I spent so much time on this WAAAAAAAHHHHHHHHHHHHHHHHH!!!!!
 for i in range(len(seqs_strings)): #goes through all 25 sequences
     if i == random_seq:
         seq = seqs_strings[i]
@@ -353,11 +557,18 @@ for i in range(len(seqs_strings)): #goes through all 25 sequences
     #Meaning, it's not putting the reading frame off by 1
     #ORF start and end codons are THREE bases in length
     #A shift in the reading frame would DISPLACE these codons, either creating "new" ones and disrupted old ones (i.e. in reading frame 1)
-    #So I don't know how to mimic this displacement
-    #Or maybe I am doing it right???
-    #Now I'm thinking I am?????????? But also no?????
-    #AHHHHHHHHHHHHHHHHHH I DON'T KNOW!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if re.findall(r"ATG.*TAA", seq[1:]): #first possible ORF STARTING one base FORWARD
+    #So I don't know how to mimic this displacement using regex
+    #Might have to use a more brute force method???
+    #Like what's described here???? --> https://python.plainenglish.io/fasta-essentials-with-python-records-lengths-orfs-and-repeats-fcf6f3ff8c31
+
+    #OK WAIT I SEE WHAT THE PROBLEM IS AND WHY THIS ISN'T WORKING!!!!
+    #EVEN THOUGH I'M STARTING ONE BASE PAIR FORWARD, IT DOESN'T SHIFT THE READING FRAME
+    #CODONS ARE READ IN TRIPLETS
+    #MY USE OF REGEX DOESN'T CARE ABOUT TRIPLETS IT JUST FINDS THOSE ORFS that match the pattern!!!
+    #Which works when the reading frame is 1 (i.e. starts at index 0)
+    #But NOT for when the reading frame shifts BECAUSE it's still just pattern matching
+    #SHOOT!!!!!!!!!!!!!!!!
+    if re.findall(r"ATG.*TAA", seq[1:]): #first possible ORF STARTING one base FORWARD (i=1)
         #print(seq[1:])
         #print(re.findall(r"ATG.*TAA", seq))
         orf1.append(re.findall(r"ATG.*TAA", seq[1:])) #add it to a list containing this kind of ORF
@@ -548,4 +759,5 @@ print("\nReading frame 3 (+2)")
 #Say you have the sequence: ATTTAAGAGAGAGTTTTATTTATTTATTTTG
 #TTT is one, GAG is another, ATT is another, etc.
 #HAVE to make sure it allows for OVERLAPPING repeats!!!!
+#"count_overlap" function in BioSeq might work.......????
 
