@@ -48,7 +48,7 @@ shortest_length = min(lengths) #calculates shortest sequence in all sequences in
 for i in range(len(lengths)):
     if lengths[i] == longest_length: #this will check the length of all sequences, including "longest_length" itself
         longest_lengths.append(lengths[i]) #all longest lengths will be added
-        longest_indices.append(lengths.index(lengths[i])) #along with there indices
+        longest_indices.append(lengths.index(lengths[i])) #along with their indices
     elif lengths[i] == shortest_length: #checks shortest sequences, including "shortest_length" itself
         shortest_lengths.append(lengths[i])
         shortest_indices.append(lengths.index(lengths[i]))
@@ -161,33 +161,34 @@ def get_orfs(seq, frame):
     #What is the starting position of the longest ORF in the sequence that contains it?
 
     #this is for like if the user actually puts in the entire string for the identifier name, not just a sequence number
-    """user_identifier = string(input())
+    user_identifier = string(input())
 
     for i in range(len(identifiers)):
         if user_identifier == identifiers[i]:
-            picked_identifier = i"""
+            picked_identifier = i
 
-    #Let user pick the identifier
-    print("\nPick a number between 0 and %d" % (seq_nums-1))
-    picked_identifier = int(input())
-    #print(picked_identifier)
-    while picked_identifier < 0 or picked_identifier > (seq_nums-1):
-        print("Pick a number between 0 and %d" % (seq_nums-1))
-        picked_identifier = int(input())
-
-    if picked_identifier in orf_indices1:
-        print("Sequence identifier of sequence %d" % (picked_identifier+1))
-        print(identifiers[picked_identifier])
-    else:
-        print("Pick a number from the following list:")
-        print(orf_indices1)
-        picked_identifier = int(input())
-        while picked_identifier not in orf_indices1:
-            print("Pick a number from the following list:")
-            print(orf_indices1)
+        else:
+            #Let user pick the identifier
+            print("\nPick a number between 0 and %d" % (seq_nums-1))
             picked_identifier = int(input())
-        print("Sequence identifier of sequence %d" % (picked_identifier + 1))
-        print(identifiers[picked_identifier])
+            #print(picked_identifier)
+            while picked_identifier < 0 or picked_identifier > (seq_nums-1):
+                print("Pick a number between 0 and %d" % (seq_nums-1))
+                picked_identifier = int(input())
+        
+            if picked_identifier in orf_indices1:
+                print("Sequence identifier of sequence %d" % (picked_identifier+1))
+                print(identifiers[picked_identifier])
+            else:
+                print("Pick a number from the following list:")
+                print(orf_indices1)
+                picked_identifier = int(input())
+                while picked_identifier not in orf_indices1:
+                    print("Pick a number from the following list:")
+                    print(orf_indices1)
+                    picked_identifier = int(input())
+                print("Sequence identifier of sequence %d" % (picked_identifier + 1))
+                print(identifiers[picked_identifier])
 
 
     #With the identifier chosen and valid, have to find longest ORF in that sequence
@@ -218,7 +219,7 @@ frame = int(input())
 
 get_orfs(seqs_strings ,frame)
 
-print("Enter repeat length:")
+print("\n\nEnter repeat length:")
 repeat_len = int(input())
 
 
@@ -236,6 +237,7 @@ def get_repeats(seqs, n):
             repeat = i[j:j+n] #Where "i" is the current sequence and [j:j+n] is the repeat ("ATG, "GGTC", whatever)
             repeats[repeat] += 1 #add the repeat to the "repeats" dictionary along with its count
 
+    print(repeats)
     max_repeat = max(repeats, key = repeats.get)
     print("Most frequent repeat is:")
     print(max_repeat)
