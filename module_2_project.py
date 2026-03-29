@@ -161,7 +161,7 @@ def get_orfs(seq, frame):
     #What is the starting position of the longest ORF in the sequence that contains it?
 
     #this is for like if the user actually puts in the entire string for the identifier name, not just a sequence number
-    user_identifier = string(input())
+    user_identifier = input()
 
     for i in range(len(identifiers)):
         if user_identifier == identifiers[i]:
