@@ -109,7 +109,7 @@ def get_orfs(seq, frame):
     stop_codons = ["TAA", "TGA", "TAG"] #three possible stop codons to terminate ORF
     orfs1 = [] #stores ORFs
     lengths = [] #stores lengths of ORFs
-    j = frame-1 #start at either 0, +1, or +2
+    j = frame-1 #reading frame starts at either 0, +1, or +2
 
     for i in range(len(seqs_strings)): #go through all 25 sequences
         seq = seqs_strings[i] #holder for the current sequence, helps readability
@@ -129,10 +129,13 @@ def get_orfs(seq, frame):
                         #print(i)
                         #print(orfs)
                         break #break out inner loop, find more in current sequence
-                    h += 3
-                j = h if h > j else j + 3
+                    h += 1
+                if h > j:
+                    j = h + 3
+                else:
+                    j += 3
             else:
-                j += 3
+                j += 1
 
     length_orfs1 = []
     orf_indices1 = []
@@ -175,7 +178,7 @@ def get_orfs(seq, frame):
             while picked_identifier < 0 or picked_identifier > (seq_nums-1):
                 print("Pick a number between 0 and %d" % (seq_nums-1))
                 picked_identifier = int(input())
-        
+
             if picked_identifier in orf_indices1:
                 print("Sequence identifier of sequence %d" % (picked_identifier+1))
                 print(identifiers[picked_identifier])
@@ -210,7 +213,7 @@ def get_orfs(seq, frame):
     #I'm thinking I have to add 1 to the start and end positions since indexing starts at the 0th position
     #So I'm pretty sure they're a base behind
     return(print("\nSequence %d longest ORF is %d base pairs long starting at position %d and ending at position %d"
-          % ((picked_identifier+1), max(picked_orf1_len), (picked_orf1_start+1), (picked_orf1_end+1) )))
+          % ((picked_identifier+1), max(picked_orf1_len), (picked_orf1_start), (picked_orf1_end) )))
 
 
 #call ORF finder function, ask for user input
