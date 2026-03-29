@@ -102,7 +102,7 @@ seqs_strings = list(map(str, seqs))
 #print(len(seqs_strings))
 #type(seqs_strings)
 
-
+"""
 #Create function that finds ORFs given the input frame
 def get_orfs(seq, frame):
     print("\nThis is READING FRAME %d" % frame)
@@ -176,30 +176,6 @@ def get_orfs(seq, frame):
         if user_identifier == identifiers[i]:
             picked_identifier = i
 
-        """else:
-            #Let user pick the identifier
-            print("\nPick a number between 0 and %d" % (seq_nums-1))
-            picked_identifier = int(input())
-            #print(picked_identifier)
-            while picked_identifier < 0 or picked_identifier > (seq_nums-1):
-                print("Pick a number between 0 and %d" % (seq_nums-1))
-                picked_identifier = int(input())
-
-            if picked_identifier in orf_indices1:
-                print("Sequence identifier of sequence %d" % (picked_identifier+1))
-                print(identifiers[picked_identifier])
-            else:
-                print("Pick a number from the following list:")
-                print(orf_indices1)
-                picked_identifier = int(input())
-                while picked_identifier not in orf_indices1:
-                    print("Pick a number from the following list:")
-                    print(orf_indices1)
-                    picked_identifier = int(input())
-                print("Sequence identifier of sequence %d" % (picked_identifier + 1))
-                print(identifiers[picked_identifier])"""
-
-
     #With the identifier chosen and valid, have to find longest ORF in that sequence
     #So if sequence 1 (or 0 in this case) was chosen, have to find the ORFs that have their fourth item in the list match
     #The chosen identifier
@@ -227,6 +203,7 @@ print("What reading frame do you want? 1, 2, or 3")
 frame = int(input())
 
 get_orfs(seqs_strings ,frame)
+"""
 
 print("\n\nEnter repeat length:")
 repeat_len = int(input())
@@ -239,11 +216,13 @@ repeat_len = int(input())
 def get_repeats(seqs, n):
     repeats = Counter() #stores repeats of each variety, recording how many times that repeat occurs in all sequences
 
-    for i in seqs: #go through all sequences in file
+    for i in seqs: #go through all sequences in file base by base
+        #print(seqs)
         if n <= 0 or n > len(seqs): #check that n (repeat length) is valid
             continue
-        for j in range(0, (len(seqs) - n + 1)): #go through that current sequence not exceeding the length of the repeat
-            repeat = i[j:j+n] #Where "i" is the current sequence and [j:j+n] is the repeat ("ATG, "GGTC", whatever)
+        for j in range(0, (len(seqs) - n + 1)): #go through sequence but not exceeding the length of the repeat
+            repeat = i[j:j+n] #Where "i" is the current position and [j:j+n] is the repeat ("ATG, "GGTC", whatever)
+            #print(repeat)
             repeats[repeat] += 1 #add the repeat to the "repeats" dictionary along with its count
 
     print(repeats)
