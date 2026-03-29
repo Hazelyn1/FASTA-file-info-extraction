@@ -145,8 +145,6 @@ def get_orfs(seq, frame):
 
     #print(orfs)
 
-
-
     for i in range(len(orfs1)):
         length_orfs1.append(orfs1[i][2]) #access length of current ORF
         orf_indices1.append(orfs1[i][3]) #access sequence index of current ORF
@@ -171,13 +169,14 @@ def get_orfs(seq, frame):
     #What is the starting position of the longest ORF in the sequence that contains it?
 
     #this is for like if the user actually puts in the entire string for the identifier name, not just a sequence number
+    print("Input identifier:")
     user_identifier = input()
 
     for i in range(len(identifiers)):
         if user_identifier == identifiers[i]:
             picked_identifier = i
 
-        else:
+        """else:
             #Let user pick the identifier
             print("\nPick a number between 0 and %d" % (seq_nums-1))
             picked_identifier = int(input())
@@ -198,7 +197,7 @@ def get_orfs(seq, frame):
                     print(orf_indices1)
                     picked_identifier = int(input())
                 print("Sequence identifier of sequence %d" % (picked_identifier + 1))
-                print(identifiers[picked_identifier])
+                print(identifiers[picked_identifier])"""
 
 
     #With the identifier chosen and valid, have to find longest ORF in that sequence
