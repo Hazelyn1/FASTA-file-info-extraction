@@ -123,7 +123,7 @@ def get_orfs(seq, frame):
                 while h <= len(seq) - 3: #meaning go through current sequence
                     stop = seq[h: h+3] #keeps track of each codon
                     if stop in stop_codons: #if "stop" hits one of the three stop codons:
-                        start1 = j + 1
+                        start1 = j
                         end1 = h + 3
                         length1 = end1 - start1
                         orfs1.append((start1, end1, length1, i))
@@ -132,7 +132,7 @@ def get_orfs(seq, frame):
                         #print(i)
                         #print(orfs)
                         break #break out inner loop, find more in current sequence
-                    h += 1
+                    h += 3
                 if h > j:
                     j = h + 3
                 else:
@@ -164,8 +164,8 @@ def get_orfs(seq, frame):
             print("\nSequence %d has the longest ORF at %d base pairs long" % (orf_indices1[i]+1, max_orf1))
             print("Sequence %d identifier:" % (orf_indices1[i]+1))
             print(identifiers[orf_indices1[i]])
-            print("Starting position of longest ORF in sequence %d" % *orf_indices1[i]+1)) 
-            print(orfs1[i][0]+1)
+            print("Starting position of longest ORF in sequence %d" % (orf_indices1[i] + 1))
+            print(orfs1[i][0] + 1)
 
     #For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier?
     #What is the starting position of the longest ORF in the sequence that contains it?
