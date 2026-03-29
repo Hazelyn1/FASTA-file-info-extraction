@@ -164,7 +164,7 @@ def get_orfs(seq, frame):
             print("\nSequence %d has the longest ORF at %d base pairs long" % (orf_indices1[i]+1, max_orf1))
             print("Sequence %d identifier:" % (orf_indices1[i]+1))f
             print(identifiers[orf_indices1[i]])
-            print("Starting position of longest ORF in sequence %d" % orf_indices1[i]+1) 
+            print("Starting position of longest ORF in sequence %d" % *orf_indices1[i]+1)) 
             print(orfs1[i][0]+1)
 
     #For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier?
