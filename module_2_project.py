@@ -138,7 +138,7 @@ def get_orfs(seq, frame):
                 else:
                     j += 3
             else:
-                j += 1
+                j += 3
 
     length_orfs1 = []
     orf_indices1 = []
