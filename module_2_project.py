@@ -109,14 +109,15 @@ def get_orfs(seq, frame):
     stop_codons = ["TAA", "TGA", "TAG"] #three possible stop codons to terminate ORF
     orfs1 = [] #stores ORFs
     lengths = [] #stores lengths of ORFs
-    j = frame-1 #reading frame starts at either 0, +1, or +2
+    j = frame - 1 #reading frame starts at either 0, +1, or +2
 
     for i in range(len(seqs_strings)): #go through all 25 sequences
         seq = seqs_strings[i] #holder for the current sequence, helps readability
-
+        j = frame - 1
         while j <= len(seq) - 3: #go through sequence making sure at least one codon is left in the current sequence
             #print(i)
             codon = seq[j:j+3] #iterate through bases in sets of three, which is a codon
+            #print(codon)
             if codon == "ATG": #check to see if current codon is a start codon
                 h = j + 3
                 while h <= len(seq) - 3: #meaning go through current sequence
@@ -126,6 +127,8 @@ def get_orfs(seq, frame):
                         end1 = h + 3
                         length1 = end1 - start1
                         orfs1.append((start1, end1, length1, i))
+                        #print(start1)
+                        #print(end1)
                         #print(i)
                         #print(orfs)
                         break #break out inner loop, find more in current sequence
@@ -142,9 +145,11 @@ def get_orfs(seq, frame):
 
     #print(orfs)
 
+
+
     for i in range(len(orfs1)):
-        length_orfs1.append(orfs1[i][2])
-        orf_indices1.append(orfs1[i][3])
+        length_orfs1.append(orfs1[i][2]) #access length of current ORF
+        orf_indices1.append(orfs1[i][3]) #access sequence index of current ORF
 
     print("\nReading frame %d ORF lengths:" % frame)
     print(length_orfs1)
