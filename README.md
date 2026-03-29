@@ -1,4 +1,4 @@
-# FASTA-file-manipulation
+# FASTA-file-info-extraction
 
 Part of my Genomic Data Science Specialization course. This is the final project for Module 2: Python for Genomic Data Science.
 
