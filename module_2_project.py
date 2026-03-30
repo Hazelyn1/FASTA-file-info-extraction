@@ -1,5 +1,5 @@
 #Hazelyn Cates
-#Started 3/13/26, finished 3/29/26
+#Started 3/13/26, ended 3/29/26
 #This is part of my Genomic Data Science Specialization class, for Module 2 final project
 
 from Bio import SeqIO
