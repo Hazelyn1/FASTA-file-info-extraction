@@ -1,13 +1,9 @@
 #Hazelyn Cates
-#Started 3/13/26
+#Started 3/13/26, finished 3/29/26
 #This is part of my Genomic Data Science Specialization class, for Module 2 final project
-#from re import match
 
-#import Bio
 from Bio import SeqIO
 from collections import Counter
-#import re #regex
-#from random import randrange
 
 #for storing number of sequences in file:
 seq_nums = 0
