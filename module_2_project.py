@@ -216,12 +216,12 @@ repeat_len = int(input())
 def get_repeats(seqs, n):
     repeats = Counter() #stores repeats of each variety, recording how many times that repeat occurs in all sequences
 
-    for i in seqs: #go through all sequences in file base by base
+    for s in seqs: #go through all sequences in file base by base
         #print(seqs)
         if n <= 0 or n > len(seqs): #check that n (repeat length) is valid
             continue
-        for j in range(0, (len(seqs) - n + 1)): #go through sequence but not exceeding the length of the repeat
-            repeat = i[j:j+n] #Where "i" is the current position and [j:j+n] is the repeat ("ATG, "GGTC", whatever)
+        for j in range(0, (len(s) - n + 1)): #go through sequence but not exceeding the length of the repeat
+            repeat = s[j:j+n] #Where "i" is the current position and [j:j+n] is the repeat ("ATG, "GGTC", whatever)
             #print(repeat)
             repeats[repeat] += 1 #add the repeat to the "repeats" dictionary along with its count
 
