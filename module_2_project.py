@@ -102,7 +102,7 @@ seqs_strings = list(map(str, seqs))
 #print(len(seqs_strings))
 #type(seqs_strings)
 
-"""
+
 #Create function that finds ORFs given the input frame
 def get_orfs(seq, frame):
     print("\nThis is READING FRAME %d" % frame)
@@ -203,7 +203,7 @@ print("What reading frame do you want? 1, 2, or 3")
 frame = int(input())
 
 get_orfs(seqs_strings ,frame)
-"""
+
 
 print("\n\nEnter repeat length:")
 repeat_len = int(input())
