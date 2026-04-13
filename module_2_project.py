@@ -70,11 +70,7 @@ print("The shortest sequence is %d base pairs long" % shortest_length)
 longest_id = []
 shortest_id = []
 
-#NOW,
-#Want to match the max(s) and min(s) to the correct sequence identifier
-#If there were multiple, would have to use a for loop and iterate the length of the max and min indices
-#Or might just do that anyway under the assumption there are multiple
-#Since this program has to work with any FASTA file
+#Want to match the max(s) and min(s) to the correct sequence identifier (even if there are multiple of the same min & max)
 
 for i in range(len(identifiers)): #go through all 25 identifiers
     for j in range(len(longest_indices)): #go through however many longest lengths there are
@@ -93,10 +89,9 @@ print(shortest_id)
 print("\n%d sequences in file" % seq_nums)
 print("\n\n")
 
-#Convert list of sequences in "seqs" to strings so I can parse through them
+#Convert list of sequences in "seqs" to strings to be able to parse through them
 seqs_strings = list(map(str, seqs))
 #print(len(seqs_strings))
-#type(seqs_strings)
 
 
 #Create function that finds ORFs given the input frame
@@ -151,7 +146,7 @@ def get_orfs(seq, frame):
     print(orf_indices1)
 
 
-    #Now need to get max ORF in the file and it's identifier
+    #Get max ORF in the file and its identifier
     max_orf1 = max(length_orfs1)
     for i in range(len(orf_indices1)):
         if max_orf1 == length_orfs1[i]:
@@ -164,7 +159,7 @@ def get_orfs(seq, frame):
     #For a given sequence identifier, what is the longest ORF contained in the sequence represented by that identifier?
     #What is the starting position of the longest ORF in the sequence that contains it?
 
-    #this is for like if the user actually puts in the entire string for the identifier name, not just a sequence number
+    #this is for if the user actually puts in the entire string for the identifier name, not just a sequence number
     print("Input identifier:")
     user_identifier = input()
 
@@ -186,10 +181,6 @@ def get_orfs(seq, frame):
                 picked_orf1_start = orfs1[i][0] #store the start position
                 picked_orf1_end = orfs1[i][1] #store the end position
 
-    #THIS IS CORRECT
-    #BUT
-    #I'm thinking I have to add 1 to the start and end positions since indexing starts at the 0th position
-    #So I'm pretty sure they're a base behind
     return(print("\nSequence %d longest ORF is %d base pairs long starting at position %d and ending at position %d"
           % ((picked_identifier+1), max(picked_orf1_len), (picked_orf1_start), (picked_orf1_end) )))
 
@@ -205,10 +196,8 @@ print("\n\nEnter repeat length:")
 repeat_len = int(input())
 
 
-#Write function that finds ALL repeats (overlaps allowed) of length n in each sequence in the FASTA file
-#Given a length n, your program should be able to identify all repeats of length n in all sequences in the FASTA file.
-#your program should also determine how many times each repeat occurs in the file,
-#and which is the most frequent repeat of a given length.
+#Write function that finds ALL repeats (overlaps allowed) of length n in each sequence in the FASTA file,
+#how many times that repeat occurs in the file, and find which is the most frequent repeat of a given length
 def get_repeats(seqs, n):
     repeats = Counter() #stores repeats of each variety, recording how many times that repeat occurs in all sequences
 
